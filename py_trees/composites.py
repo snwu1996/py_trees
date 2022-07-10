@@ -417,6 +417,12 @@ class Chooser(Selector):
                 if child is self.current_child:
                     for node in self.current_child.tick():
                         yield node
+                    # TODO(snwu): Keep track of the current child index rather than
+                    # looking it up every time we switch to the next child.
+                    if self.current_child.status == Status.FAILURE:
+                        new_child_idx = self.children.index(self.current_child) + 1
+                        if new_child_idx < len(self.children):
+                            self.current_child = self.children[new_child_idx]
                 elif child.status != Status.INVALID:
                     child.stop(Status.INVALID)
         else:
